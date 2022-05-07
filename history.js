@@ -1,11 +1,11 @@
 class History {
-    constructor(path, max) {
-        this.paths = [path];
-        this.index = 0;
-        this.max = max;
+    constructor(params) {
+        this.routes = params.routes ?? [];
+        this.index = params.index ?? 0;
+        this.max = params.max ?? 0;
     }
     goForward(steps = 1) {
-        const lastIndex = this.paths.length - 1;
+        const lastIndex = this.routes.length - 1;
         const newIndex = this.index + steps;
 
         this.index = (newIndex <= lastIndex) ? newIndex : lastIndex;
@@ -20,21 +20,26 @@ class History {
 
         return this;
     }
-    addPath(path) {
-        const lastIndex = this.paths.length - 1;
-        const isFull = this.paths.length >= this.max;
+    addPath(route) {
+        const lastIndex = this.routes.length - 1;
 
-        const prevPaths = (this.index < lastIndex)
-            ? this.paths.slice(0, this.index + 1)
-            : this.paths.slice(isFull, this.paths.length);
+        const doesExceed = this.routes.length >= this.max;
+        const isFull = this.max && doesExceed;
 
-        const newPaths = [...prevPaths, path];
+        const prevRoutes = (this.index < lastIndex)
+            ? this.routes.slice(0, this.index + 1)
+            : this.routes.slice(isFull, this.routes.length);
 
-        this.paths = newPaths;
+        const newRoutes = [ ...prevRoutes, route ];
+
+        this.routes = newRoutes;
 
         return this;
     }
-    getPaths() {
-        return [ ...this.paths ];
+    getRoutes() {
+        return [ ...this.routes ];
+    }
+    getLastRoute() {
+        return this.routes[this.index];
     }
 }
